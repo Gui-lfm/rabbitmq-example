@@ -1,0 +1,19 @@
+version: '3'
+services:
+  db:
+    image: mcr.microsoft.com/azure-sql-edge:latest
+    container_name: shop_trybe_db
+    ports:
+        - 1433:1433
+    environment:
+      - ACCEPT_EULA=Y
+      - MSSQL_SA_PASSWORD=ShopTrybe123!
+      - MSSQL_PID=Developer
+
+  rabbitmq:
+     image: rabbitmq:3-management
+     container_name: rabbitmq_management            
+     ports: 
+      - 5672:5672 
+      - 15000:15672 
+     restart: always
