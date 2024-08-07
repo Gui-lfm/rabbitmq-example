@@ -1,19 +1,54 @@
 version: '3'
 services:
-  db:
+  dbsql:
     image: mcr.microsoft.com/azure-sql-edge:latest
-    container_name: shop_trybe_db
+    container_name: shop_try_db
+    networks:
+      - minha-rede
     ports:
         - 1433:1433
     environment:
       - ACCEPT_EULA=Y
       - MSSQL_SA_PASSWORD=ShopTrybe123!
       - MSSQL_PID=Developer
-
+    
   rabbitmq:
      image: rabbitmq:3-management
      container_name: rabbitmq_management            
      ports: 
       - 5672:5672 
       - 15000:15672 
+     networks:
+      - minha-rede
      restart: always
+  
+  auth.api:
+    container_name: auth.api
+    build: ./Auth.API
+    ports:
+      - 5010:5010
+    environment:
+      - APIPORT=5010
+      - DBSERVER=dbsql
+      - DBNAME=ShopTrybe
+      - DBUSER=SA
+      - DBPASSWORD=ShopTrybe123!
+      - MESSAGE_BROKER_HOST=rabbitmq
+    networks:
+      - minha-rede
+  # informações de EMAIL_FROM e EMAIL_PASSWORD foram deixadas genéricas por se tratar de dados sensíveis
+  notification.service:
+    container_name: notification.service
+    build: ./Notification.Service
+    environment:
+      - EMAIL_HOST=smtp.gmail.com
+      - EMAIL_FROM=seuemail@gmail.com 
+      - EMAIL_PASSWORD=xxxx xxxx xxxx xxxx
+      - EMAIL_PORT=587
+      - MESSAGE_BROKER_HOST=rabbitmq
+    networks:
+      - minha-rede
+
+networks:
+  minha-rede:
+    driver: bridge

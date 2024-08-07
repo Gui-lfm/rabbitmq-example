@@ -1,5 +1,6 @@
 using Auth.API.Context;
 using Auth.API.Repository;
+using Auth.API.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -9,9 +10,13 @@ builder.Services.AddControllers();
 builder.Services.AddDbContext<DatabaseContext>();
 builder.Services.AddScoped<IDatabaseContext, DatabaseContext>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<INotificationService, NotificationService>();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+var port = builder.Configuration["APIPORT"];
+builder.WebHost.UseUrls($"http://*:{port}");
 
 var app = builder.Build();
 

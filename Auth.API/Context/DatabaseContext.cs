@@ -9,7 +9,11 @@ public class DatabaseContext : DbContext, IDatabaseContext
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) {
         if (!optionsBuilder.IsConfigured)
         {
-            var connectionString = "Server=localhost;Database=ShopTrybe;User=SA;Password=ShopTrybe123!;TrustServerCertificate=True";
+            var server = Environment.GetEnvironmentVariable("DBSERVER");
+            var database = Environment.GetEnvironmentVariable("DBNAME");
+            var dbuser = Environment.GetEnvironmentVariable("DBUSER");
+            var dbpass = Environment.GetEnvironmentVariable("DBPASSWORD");
+            var connectionString = "Server="+server+";Database="+database+";User="+dbuser+";Password="+dbpass+";TrustServerCertificate=True";
             optionsBuilder.UseSqlServer(connectionString);
         }
     }
